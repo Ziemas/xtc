@@ -30,6 +30,8 @@
 #define GIF_REG_CTRL_PSE BIT(3)
 
 #define GIF_REG_MODE (0x10003010)
+#define GIF_REG_MODE_M3R BIT(0)
+#define GIF_REG_MODE_IMT BIT(2)
 #define GIF_REG_STAT (0x10003020)
 #define GIF_REG_STAT_APATH GENMASK(11, 10)
 
@@ -74,6 +76,8 @@
 #define DMA_SADR 0x80
 
 #define DMA_REG_CHCR_DIR BIT(0)
+#define DMA_REG_CHCR_DIR_TO_MEM 0
+#define DMA_REG_CHCR_DIR_FROM_MEM 1
 #define DMA_REG_CHCR_MOD GENMASK(3, 2)
 #define DMA_REG_CHCR_MOD_NORM 0
 #define DMA_REG_CHCR_MOD_CHAIN 1
@@ -154,10 +158,7 @@ mdmaInit(void)
 	mdmaResetDma();
 
 	clear32(DMA_REG_GIF(DMA_CHCR), DMA_REG_CHCR_TTE);
-	write32(GIF_REG_MODE, 4); // IMT intermittet mode
-
-	set32(DMA_REG_VIF1(DMA_CHCR), DMA_REG_CHCR_TTE);
-	set32(DMA_REG_VIF1(DMA_CHCR), DMA_REG_CHCR_TIE);
+	write32(GIF_REG_MODE, GIF_REG_MODE_IMT); // IMT intermittet mode
 }
 
 static void
@@ -460,22 +461,20 @@ mdmaCall(mdmaList *list, uint16 qwc, void *addr, uint32 w0, uint32 w1)
 void
 mdmaSend(DMA_CHAN chan, mdmaList *list)
 {
-	uint32 chcr, addr;
+	uint32 chcr = 0, addr = 0;
 
 	FlushCache(0);
 
 	addr = mdmaCheckAddr(((uint32)list->p & ~0xF0000000));
 	mdmaWait(chan);
-	if (read32(chan + DMA_TADR) != 0xffffffff) {
-		write32(chan + DMA_TADR, (uint32)addr);
-	}
 
+	write32(chan + DMA_TADR, (uint32)addr);
 	write32(chan + DMA_QWC, 0);
 
-	chcr = read32(chan + DMA_CHCR);
-	chcr &= ~DMA_REG_CHCR_MOD;
+	chcr |= FIELD_PREP(DMA_REG_CHCR_DIR, DMA_REG_CHCR_DIR_FROM_MEM);
 	chcr |= FIELD_PREP(DMA_REG_CHCR_MOD, DMA_REG_CHCR_MOD_CHAIN);
-	chcr |= FIELD_PREP(DMA_REG_CHCR_DIR, 1);
+	chcr |= FIELD_PREP(DMA_REG_CHCR_TTE, 1);
+	chcr |= FIELD_PREP(DMA_REG_CHCR_TIE, 1);
 	chcr |= FIELD_PREP(DMA_REG_CHCR_STR, 1);
 	write32(chan + DMA_CHCR, chcr);
 }
