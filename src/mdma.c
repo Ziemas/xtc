@@ -277,7 +277,9 @@ mdmaWait(DMA_CHAN chan)
 static uint32
 mdmaCheckAddr(uint32 data)
 {
+	// Test if addr is on scratchpad
 	if ((data >> 28) == 7) {
+		// if so, set SPR bit
 		data = (data & 0xfffffff) | 0x80000000;
 	}
 
@@ -465,7 +467,7 @@ mdmaSend(DMA_CHAN chan, mdmaList *list)
 
 	FlushCache(0);
 
-	addr = mdmaCheckAddr(((uint32)list->p & ~0xF0000000));
+	addr = mdmaCheckAddr((uint32)list->p);
 	mdmaWait(chan);
 
 	write32(chan + DMA_TADR, (uint32)addr);
