@@ -1,6 +1,8 @@
 #ifndef GS_H_
 #define GS_H_
 
+/* Constants and macros from PS2SDK */
+
 #define GS_NONINTERLACED 0x00
 #define GS_INTERLACED 0x01
 
