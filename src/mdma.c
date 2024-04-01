@@ -414,7 +414,7 @@ mdmaRef(mdmaList *list, void *data, uint16 qwc, uint32 w0, uint32 w1)
 void**
 mdmaRefDirect(mdmaList *list, void *data, uint16 qwc)
 {
-	return mdmaRef(list, data, qwc, VIFnop, VIFdirect+qwc);
+	return mdmaRef(list, data, qwc, VIF_NOP(), VIF_DIRECT(qwc));
 }
 
 void
@@ -428,7 +428,7 @@ mdmaCnt(mdmaList *list, uint16 qwc, uint32 w0, uint32 w1)
 void
 mdmaCntDirect(mdmaList *list, uint16 qwc)
 {
-	mdmaCnt(list, qwc, VIFnop, VIFdirect+qwc);
+	mdmaCnt(list, qwc, VIF_NOP(), VIF_DIRECT(qwc));
 }
 
 void
@@ -442,7 +442,7 @@ mdmaRet(mdmaList *list, uint16 qwc, uint32 w0, uint32 w1)
 void
 mdmaRetDirect(mdmaList *list, uint16 qwc)
 {
-	mdmaRet(list, qwc, VIFnop, VIFdirect+qwc);
+	mdmaRet(list, qwc, VIFnop, VIF_DIRECT(qwc));
 }
 
 void**

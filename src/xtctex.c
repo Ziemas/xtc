@@ -340,7 +340,7 @@ xtcrUpload(xtcRaster *r)
 	mdmaAddGIFtag(l, 1, 0, 0, 0, GS_GIF_PACKED, 1, 0xe);
 	mdmaAddAD(l, GS_REG_BITBLTBUF,
 	    GS_SET_BITBLTBUF(0, 0, 0, r->base + r->texBuf.bp, r->texBuf.bw, r->psm));
-	mdmaCall(l, 0, pkt, VIFnop, VIFnop);
+	mdmaCall(l, 0, pkt, VIF_NOP(), VIF_NOP());
 	pkt += 8;
 
 	if(r->clut) {
@@ -349,7 +349,7 @@ xtcrUpload(xtcRaster *r)
 		mdmaAddAD(l, GS_REG_BITBLTBUF,
 		    GS_SET_BITBLTBUF(0, 0, 0, r->base + r->clutBuf.bp, r->clutBuf.bw,
 			GS_PIXMODE_32));
-		mdmaCall(l, 0, pkt, VIFnop, VIFnop);
+		mdmaCall(l, 0, pkt, VIF_NOP(), VIF_NOP());
 	}
 
 	mdmaCntDirect(l, 2);
