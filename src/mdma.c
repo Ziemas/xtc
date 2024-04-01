@@ -167,15 +167,16 @@ mdmaInit(void)
 static void
 mdmaResetPath()
 {
+	// VIFcode reset routine
 	static const uint32 init_vif_regs[] __attribute__((aligned(128))) = {
-		0x01000404,
-		0x20000000,
-		0x00000000,
-		0x05000000,
-		0x06000000,
-		0x03000000,
-		0x02000000,
-		0x04000000,
+		VIF_STCYCL(4, 4),  // 0x01000404
+		VIF_STMASK(),      // 0x20000000
+		0x00000000,        // stmask arg
+		VIF_STMOD(0),      // 0x05000000
+		VIF_MSKPATH3(0),   // 0x06000000
+		VIF_BASE(0),       // 0x03000000
+		VIF_OFFSET(0),     // 0x02000000
+		VIF_ITOP(0),       // 0x04000000
 	};
 
 	write32(VIF1_FBRST, VIF1_FBRST_RST); // reset vif1
