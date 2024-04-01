@@ -1,24 +1,6 @@
 #ifndef GS_H_
 #define GS_H_
 
-#include "types.h"
-
-typedef struct {
-	/** Interlace/non-interlace mode. */
-	uint8 interlace;
-	/** Video mode. */
-	uint8 omode;
-	/** FIELD/FRAME value. */
-	uint8 ffmode;
-	/** GS version. */
-	uint8 version;
-} GsGParam_t;
-
-/** Resets the GS and GIF. */
-#define GS_INIT_RESET 0
-/** Drawing operations are cancelled and primitive data will be discarded. */
-#define GS_INIT_DRAW_RESET 1
-
 #define GS_NONINTERLACED 0x00
 #define GS_INTERLACED 0x01
 
@@ -27,19 +9,6 @@ typedef struct {
 /** Read every line from the beginning with the start of FRAME. */
 #define GS_FFMD_FRAME 0x01
 
-/*	About the supported video modes:
-		As GsSetDefaultDisplayEnv() has been modified to provide functionality that is
-   similar to the Sony sceGsSetDefDispEnv() function, it will now automatically in fill in the
-   GS_DISPENV structure with values for the video mode that is specified for GsResetGraph().
-
-	However, as with the Sony function:
-		1. Only NTSC, PAL and 480P video modes are supported.
-		2. MAGV isn't automatically calculated.
-
-	It is possible to cover these limitations by setting the relevant values after calling
-   GsSetDefaultDisplayEnv(), but I do not know how these values are to be calculated for other video
-   modes.
-*/
 enum GsVideoModes {
 	GS_MODE_NTSC = 0x02,
 	GS_MODE_PAL,
@@ -306,21 +275,15 @@ enum GsGifDataFormat {
 /** GS No Operation */
 #define GS_REG_NOP 0x7F
 
-// GS Primitive types
-/** Point primitive */
-#define GS_PRIM_POINT 0x00
-/** Line primitive */
-#define GS_PRIM_LINE 0x01
-/** Line strip primitive */
-#define GS_PRIM_LINE_STRIP 0x02
-/** Triangle primitive */
-#define GS_PRIM_TRIANGLE 0x03
-/** Triangle strip primitive */
-#define GS_PRIM_TRIANGLE_STRIP 0x04
-/** Triangle fan primitive */
-#define GS_PRIM_TRIANGLE_FAN 0x05
-/** Sprite primitive */
-#define GS_PRIM_SPRITE 0x06
+/** GIFtag Address+Data */
+#define GIF_REG_AD 0x0E
+/** GIFtag No Operation */
+#define GIF_REG_NOP 0x0F
+
+#define GIF_SET_TAG(NLOOP, EOP, PRE, PRIM, FLG, NREG)                                  \
+	(uint64)((NLOOP) & 0x00007FFF) << 0 | (uint64)((EOP) & 0x00000001) << 15 |     \
+	    (uint64)((PRE) & 0x00000001) << 46 | (uint64)((PRIM) & 0x000007FF) << 47 | \
+	    (uint64)((FLG) & 0x00000003) << 58 | (uint64)((NREG) & 0x0000000F) << 60
 
 #define GS_SET_ALPHA(A, B, C, D, ALPHA)                                         \
 	(uint64)((A) & 0x00000003) << 0 | (uint64)((B) & 0x00000003) << 2 |     \

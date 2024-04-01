@@ -1,4 +1,3 @@
-#include "gif.h"
 #include "gs.h"
 #include "kernel_shim.h"
 #include "m.h"
@@ -36,10 +35,10 @@ drawThing(void)
 
 	mdmaCntDirect(&viflist, 4);
 	mdmaAddGIFtag(&viflist, 3, 1, 1, GS_PRIM_SPRITE, GS_GIF_PACKED, 1, 0xe);
-	mdmaAddAD(&viflist, GIF_REG_RGBAQ, GIF_SET_RGBAQ(255, 255, 255, 255, 255));
-	mdmaAddAD(&viflist, GIF_REG_XYZ2, GIF_SET_XYZ((xoffset + x) << 4, (yoffset + y) << 4, 0));
-	mdmaAddAD(&viflist, GIF_REG_XYZ2,
-	    GIF_SET_XYZ((xoffset + x + sz) << 4, (yoffset + y + sz) << 4, 0));
+	mdmaAddAD(&viflist, GS_REG_RGBAQ, GS_SET_RGBAQ(255, 255, 255, 255, 255));
+	mdmaAddAD(&viflist, GS_REG_XYZ2, GS_SET_XYZ((xoffset + x) << 4, (yoffset + y) << 4, 0));
+	mdmaAddAD(&viflist, GS_REG_XYZ2,
+	    GS_SET_XYZ((xoffset + x + sz) << 4, (yoffset + y + sz) << 4, 0));
 
 	x += vx;
 	y += vy;

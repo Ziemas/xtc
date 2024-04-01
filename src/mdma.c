@@ -1,6 +1,5 @@
 #include "mdma.h"
 
-#include "gif.h"
 #include "gs.h"
 #include "kernel_shim.h"
 #include "util.h"
