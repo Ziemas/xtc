@@ -11,10 +11,10 @@
 #define FIELD_GET(field, val) (((val) & (field)) / _FIELD_LSB(field))
 
 static inline uint32
-cfc2_vpu_stat()
+cfc2(int reg)
 {
 	uint32 data;
-	__asm__ volatile("cfc2 %0, $29" : "=r"(data));
+	__asm__ volatile("cfc2 %0, $%1" : "=r"(data) : "i"(reg));
 	return data;
 }
 

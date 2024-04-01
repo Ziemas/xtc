@@ -148,6 +148,10 @@
 
 #define INTC_REG_I_MASK (0x1000f010)
 
+// VPU Control register
+#define CCR_VPU_STAT 29
+#define CCR_VPU_STAT_VBS1 BIT(8)
+
 static void mdmaResetPath();
 static void mdmaResetDma();
 
@@ -302,7 +306,7 @@ mdmaSyncPath()
 		;
 
 	// check vbs1
-	while (cfc2_vpu_stat() & 0x100)
+	while (cfc2(CCR_VPU_STAT) & CCR_VPU_STAT_VBS1)
 		;
 
 	while (read32(GIF_REG_STAT) & GIF_REG_STAT_APATH)
